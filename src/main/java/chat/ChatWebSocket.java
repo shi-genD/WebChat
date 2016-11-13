@@ -1,12 +1,8 @@
 package chat;
 
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
-import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import javax.websocket.*;
+import javax.websocket.server.ServerEndpoint;
 
 /**
  * Created by shi on 12.11.16.
@@ -14,35 +10,40 @@ import java.util.Map;
 
 
 @SuppressWarnings("UnusedDeclaration")
-@WebSocket
+@ServerEndpoint(value = "/chat", configurator = GetHttpSessionConfigurator.class)
 public class ChatWebSocket {
     private ChatService chatService;
     private Session session;
+    private HttpSession httpSession;
 
-    public ChatWebSocket(ChatService chatService) {
-        this.chatService = chatService;
+    public ChatWebSocket() {
+        this.chatService = ChatService.getInstance();
     }
 
-    @OnWebSocketConnect
-    public void onOpen(Session session) {
+    @OnOpen
+    public void onOpen(Session session, EndpointConfig config) {
         chatService.add(this);
         this.session = session;
+        this.httpSession = (HttpSession) config.getUserProperties()
+                .get(HttpSession.class.getName());
+
     }
 
-    @OnWebSocketMessage
-    public void onMessage(String data) {
-        int n = UserProfiles.getInstance().getUserprofile().size();
-        chatService.sendMessage(data + " " + n);
+    @OnMessage
+    public void onMessage(String data, Session session) {
+        String name = UserService.getInstance().getUser(httpSession.getId()).getUserName();
+        String color = UserService.getInstance().getUser(httpSession.getId()).getColor();
+        chatService.sendMessage(name+data+ " ["+color+"]");
     }
 
-    @OnWebSocketClose
-    public void onClose(int statusCode, String reason) {
+    @OnClose
+    public void onClose(Session session) {
         chatService.remove(this);
     }
 
     public void sendString(String data) {
         try {
-            session.getRemote().sendString(data);
+            session.getBasicRemote().sendText(data);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

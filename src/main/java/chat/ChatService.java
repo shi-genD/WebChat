@@ -10,8 +10,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatService {
     private Set<ChatWebSocket> webSockets;
+    private static ChatService instance;
 
-    public ChatService() {
+    public static synchronized ChatService getInstance() {
+        if (instance == null) {
+            instance = new ChatService();
+        }
+        return instance;
+    }
+
+    private ChatService() {
         this.webSockets = Collections.newSetFromMap(new ConcurrentHashMap<>());
     }
 

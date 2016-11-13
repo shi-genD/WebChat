@@ -2,18 +2,19 @@
 <head>
     <meta charset="UTF-8"/>
     <title>L4.1: Jetty WebSocket Chat</title>
-    <script type="text/javascript">
-        function redirect() {
-            window.location = "http://localhost:8080/WebChat/chat.html";
-        }
-    </script>
+
 </head>
 <body onload="init();">
+    <form action="/WebChat/login2" method="POST">
+        <div>Username: <input type="text" name="username"/></div>
 
+         <div>  <select name="color">
+                <option>Black</option>
+                <option>Red</option>
+                <option>Green</option>
+                <option>Blue</option></select></div>
 
-    <form action="/index" method="POST">
-        Username: <input type="text" name="username"/>
-        <input type="button" name="submitmsg" value="Send..." onclick="redirect();"/>
+        <div><input type="submit" value="Sign in"></div>
     </form>
 
 

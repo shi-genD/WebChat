@@ -11,7 +11,7 @@
 
     <servlet-mapping>
         <servlet-name>RegisterServlet</servlet-name>
-        <url-pattern>/index</url-pattern>
+        <url-pattern>/login2</url-pattern>
     </servlet-mapping>
 
 </web-app>
