@@ -48,6 +48,7 @@
                 ws.send(message);
                 messageField.value = '';
             });
+
         });
     </script>
 
@@ -59,6 +60,10 @@
                 <input type="text" name="message" id="message" placeholder="Message" maxlength="80" style="width:60%" />
                 <button id="send-btn">Send</button>
         </div>
+        <form action="/WebChat/logout" method="GET">
+            <button id="logout">Exit</button>
+        </form>
+
     </div>
 </body>
 </html>

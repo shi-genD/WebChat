@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by shi on 12.11.16.
  */
 public class UserService {
-    private Map<String, UserProfile> userService;
+    /*private Map<String, UserProfile> userService;
     private static UserService instance;
 
     public static synchronized UserService getInstance() {
@@ -25,8 +25,16 @@ public class UserService {
         userService.put(session, user);
     }
 
+    public boolean isContain(String session) {
+        return userService.containsKey(session);
+    }
+
+    public void delete(String session) {
+        userService.remove(session);
+    }
+
     public UserProfile getUser(String session) {
         return userService.get(session);
-    }
+    }*/
 
 }

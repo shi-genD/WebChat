@@ -13,6 +13,7 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint(value = "/chat", configurator = GetHttpSessionConfigurator.class)
 public class ChatWebSocket {
     private ChatService chatService;
+    private UserProfile userProfile;
     private Session session;
     private HttpSession httpSession;
 
@@ -21,24 +22,25 @@ public class ChatWebSocket {
     }
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) {
-        chatService.add(this);
+    public void onOpen(Session session, EndpointConfig config){
+        this.httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        chatService.add(this, httpSession);
         this.session = session;
-        this.httpSession = (HttpSession) config.getUserProperties()
-                .get(HttpSession.class.getName());
-
+        this.userProfile = (UserProfile) httpSession.getAttribute("userprofile");
+        chatService.sendMessage("System: Welcome user " + userProfile.getUserName());
     }
 
     @OnMessage
     public void onMessage(String data, Session session) {
-        String name = UserService.getInstance().getUser(httpSession.getId()).getUserName();
-        String color = UserService.getInstance().getUser(httpSession.getId()).getColor();
-        chatService.sendMessage(name+data+ " ["+color+"]");
+        String name = userProfile.getUserName();
+        String color = userProfile.getColor();
+        chatService.sendMessage(name + data + " [" + color + "]");
     }
 
     @OnClose
     public void onClose(Session session) {
-        chatService.remove(this);
+        chatService.sendMessage("System: Bye user " + userProfile.getUserName());
+        chatService.remove(this, httpSession);
     }
 
     public void sendString(String data) {
@@ -47,5 +49,18 @@ public class ChatWebSocket {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatWebSocket that = (ChatWebSocket) o;
+        return httpSession.equals(that.httpSession);
+    }
+
+    @Override
+    public int hashCode() {
+        return httpSession.hashCode();
     }
 }

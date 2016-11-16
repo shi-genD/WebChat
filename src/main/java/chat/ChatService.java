@@ -1,4 +1,5 @@
 package chat;
+import javax.servlet.http.HttpSession;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatService {
     private Set<ChatWebSocket> webSockets;
+    private Set<HttpSession> httpSessions;
     private static ChatService instance;
 
     public static synchronized ChatService getInstance() {
@@ -21,6 +23,7 @@ public class ChatService {
 
     private ChatService() {
         this.webSockets = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        this.httpSessions = Collections.newSetFromMap(new ConcurrentHashMap<>());
     }
 
     public void sendMessage(String data) {
@@ -33,12 +36,18 @@ public class ChatService {
         }
     }
 
-    public void add(ChatWebSocket webSocket) {
+    public void add(ChatWebSocket webSocket, HttpSession httpSession) {
         webSockets.add(webSocket);
+        httpSessions.add(httpSession);
     }
 
-    public void remove(ChatWebSocket webSocket) {
+    public boolean containsSession(HttpSession httpSession) {
+        return httpSessions.contains(httpSession);
+    }
+
+    public void remove(ChatWebSocket webSocket, HttpSession httpSession) {
         webSockets.remove(webSocket);
+        httpSessions.remove(httpSession);
     }
 
 }
