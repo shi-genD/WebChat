@@ -15,10 +15,7 @@ import java.io.IOException;
 public class AuthenticationFilter implements Filter {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-
-    }
+    public void init(FilterConfig filterConfig) throws ServletException { }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -26,18 +23,19 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) servletResponse;
         String uri = req.getRequestURI();
         HttpSession session = req.getSession(false);
-        if (session != null && ChatService.getInstance().containsSession(session)) {
-            req.getRequestDispatcher("err.jsp").forward(servletRequest, servletResponse);
-        } else if(session == null && !(uri.endsWith("html") || uri.endsWith("LoginServlet"))){
+
+        if(session == null && (!(uri.endsWith("html") || uri.endsWith("LoginServlet")))){
             res.sendRedirect("login.html");
-        }else {
+        } else if (session != null && !(ChatService.getInstance().containsSession(session)) && uri.endsWith("html")) {
+            res.sendRedirect("chat.jsp");
+        } else if (session != null && ChatService.getInstance().containsSession(session)
+                                    && !(uri.endsWith("err.jsp")) && !(uri.endsWith("LogoutServlet"))) {
+            res.sendRedirect("err.jsp");
+        } else {
             filterChain.doFilter(servletRequest, servletResponse);
         }
     }
 
-
     @Override
-    public void destroy() {
-
-    }
+    public void destroy() { }
 }

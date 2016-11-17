@@ -20,7 +20,7 @@ public class LogoutServlet extends HttpServlet {
         if (session!=null) {
             session.invalidate();
         }
-        System.out.println("remove userprofile from session");
+        System.out.println("logout servlet delete session");
         resp.sendRedirect("login.html");
     }
 }

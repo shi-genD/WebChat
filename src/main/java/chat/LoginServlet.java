@@ -17,12 +17,14 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String color = req.getParameter("color");
         HttpSession session = req.getSession();
+
         session.setAttribute("userprofile", new UserProfile(username, color));
         session.setMaxInactiveInterval(30*60);
+
         Cookie userName = new Cookie("user", username);
         userName.setMaxAge(30*60);
         resp.addCookie(userName);
-        System.out.println("add userprofile in session");
+
         resp.sendRedirect("chat.jsp");
     }
 }
