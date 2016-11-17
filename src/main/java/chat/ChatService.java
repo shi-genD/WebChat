@@ -39,6 +39,7 @@ public class ChatService {
     public void add(ChatWebSocket webSocket, HttpSession httpSession) {
         webSockets.add(webSocket);
         httpSessions.add(httpSession);
+        System.out.println("open session in chat");
     }
 
     public boolean containsSession(HttpSession httpSession) {
@@ -48,6 +49,7 @@ public class ChatService {
     public void remove(ChatWebSocket webSocket, HttpSession httpSession) {
         webSockets.remove(webSocket);
         httpSessions.remove(httpSession);
+        System.out.println("close session in chat");
     }
 
 }

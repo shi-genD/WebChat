@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8"/>
     <style type="text/css">
-        <!--
+
         .chat_wrapper {
             width: 500px;
             margin-right: auto;
@@ -22,11 +22,11 @@
         .chat_wrapper .panel input{
             padding: 2px 2px 2px 5px;
         }
-        -->
+
     </style>
     </head>
 
-    <title>L4.1: Jetty WebSocket Chat</title>
+    <title>WebSocket Chat</title>
     <body>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script language="javascript" type="text/javascript">
@@ -43,7 +43,6 @@
 
             $('#send-btn').click(function() {
                 var messageField = document.getElementById("message");
-                var userNameField = document.getElementById("username");
                 var message = ":" + messageField.value;
                 ws.send(message);
                 messageField.value = '';
@@ -51,16 +50,27 @@
 
         });
     </script>
-
+    <%
+        //allow access only if session exists
+        String userName = null;
+        String sessionID = null;
+        Cookie[] cookies = request.getCookies();
+        if(cookies !=null){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("user")) userName = cookie.getValue();
+                if(cookie.getName().equals("JSESSIONID")) sessionID = cookie.getValue();
+            }
+        }
+    %>
+    <h3>Hi <%=userName %>, Login successful. Your Session ID=<%=sessionID %></h3>
 
     <div class="chat_wrapper">
         <div class="message_box" id="message_box"></div>
         <div class="panel">
-                <input type="text" name="name" id="username" placeholder="Your Name" maxlength="10" style="width:20%"  />
-                <input type="text" name="message" id="message" placeholder="Message" maxlength="80" style="width:60%" />
+                <input type="text" name="message" id="message" placeholder="Message" maxlength="80" style="width:80%" />
                 <button id="send-btn">Send</button>
         </div>
-        <form action="/WebChat/logout" method="GET">
+        <form action="/WebChat/LogoutServlet" method="GET">
             <button id="logout">Exit</button>
         </form>
 
