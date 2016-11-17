@@ -32,7 +32,7 @@
     <script language="javascript" type="text/javascript">
         $(document).ready(function(){
             var ws;
-            ws = new WebSocket("ws://localhost:8080/WebChat/chat");
+            ws = new WebSocket("ws://localhost:8080/chat");
             ws.onopen = function (event) {
             };
             ws.onmessage = function (event) {
@@ -58,7 +58,7 @@
                 <input type="text" name="message" id="message" placeholder="Message" maxlength="80" style="width:80%" />
                 <button id="send-btn">Send</button>
         </div>
-        <form action="/WebChat/LogoutServlet" method="GET">
+        <form action="/LogoutServlet" method="GET">
             <button id="logout">Exit</button>
         </form>
 
