@@ -6,13 +6,14 @@
 </head>
 <body>
     <form action="/LoginServlet" method="POST">
-        <div>Username: <input type="text" name="username"/></div>
+        <div>Добро пожаловать в чат</div>
+        <div>Представьтесь, пожалуйста: <input type="text" name="username"/></div>
 
-         <div>  <select name="color">
-                <option>Black</option>
-                <option>Red</option>
-                <option>Green</option>
-                <option>Blue</option></select></div>
+         <div>Выберите цвет сообщений:  <select name="color">
+                <option value="#000000">Black</option>
+                <option value="#ff0000">Red</option>
+                <option value="#00ff00">Green</option>
+                <option value="#0000ff">Blue</option></select></div>
 
         <div><input type="submit" value="Sign in"></div>
     </form>

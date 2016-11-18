@@ -1,8 +1,5 @@
 package chat;
 
-
-import org.apache.tomcat.websocket.server.WsFilter;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

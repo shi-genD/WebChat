@@ -1,5 +1,8 @@
 package chat;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
@@ -31,10 +34,15 @@ public class ChatWebSocket {
     }
 
     @OnMessage
-    public void onMessage(String data, Session session) {
+    public void onMessage(String data, Session session) throws JSONException {
         String name = userProfile.getUserName();
         String color = userProfile.getColor();
-        chatService.sendMessage(name + data + " [" + color + "]");
+        JSONObject js = new JSONObject();
+        js.put("type", "user");
+        js.put("username", name);
+        js.put("message", data);
+        js.put("textcolor", color);
+        chatService.sendMessage(data);
     }
 
     @OnClose

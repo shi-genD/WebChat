@@ -36,14 +36,24 @@
             ws.onopen = function (event) {
             };
             ws.onmessage = function (event) {
-                $('#message_box').append("<div>" + event.data + "</div>");
+                var msg = JSON.parse(event.data);
+                var type = msg.type;
+                var username = msg.username;
+                var message = msg.message;
+                var color = msg.color;
+
+                $('#message_box').append("<div><span style=\"color:"+color+"\">"+username+" : "+message+"</span></div>");
             };
             ws.onclose = function (event) {
             };
 
             $('#send-btn').click(function() {
                 var messageField = document.getElementById("message");
-                var message = ":" + messageField.value;
+                var message = messageField.value;
+                if(message == ""){ //emtpy message?
+                    alert("Enter Some message Please!");
+                    return;
+                }
                 ws.send(message);
                 messageField.value = '';
             });
