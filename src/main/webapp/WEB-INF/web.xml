@@ -10,6 +10,16 @@
     </welcome-file-list>
 
     <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>chat.EncodingFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>AuthenticationFilter</filter-name>
         <filter-class>chat.AuthenticationFilter</filter-class>
     </filter>

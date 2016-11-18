@@ -23,8 +23,9 @@ public class LoginServlet extends HttpServlet {
 
         Cookie userName = new Cookie("user", username);
         userName.setMaxAge(30*60);
+        req.setCharacterEncoding("UTF-8");
         resp.addCookie(userName);
-
+        System.out.println(username);
         resp.sendRedirect("chat.jsp");
     }
 }

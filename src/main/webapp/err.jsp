@@ -5,6 +5,7 @@
 
 </head>
 <body>
+<%@ page contentType="text/html;charset=utf-8" %>
 <%
     //allow access only if session exists
     String userName = null;

@@ -5,19 +5,30 @@
 
 </head>
 <body>
-    <form action="/LoginServlet" method="POST">
-        <div>Добро пожаловать в чат</div>
-        <div>Представьтесь, пожалуйста: <input type="text" name="username"/></div>
+<script language="javascript" type="text/javascript">
+    function empty_form () {
+        var name = document.getElementById("username").value;
+        if(name == '') {
+            alert("Человеку нужно имя >(");
+            return false;
+        }
+        return true;
+    }
+</script>
 
-         <div>Выберите цвет сообщений:  <select name="color">
-                <option value="#000000">Black</option>
-                <option value="#ff0000">Red</option>
-                <option value="#00ff00">Green</option>
-                <option value="#0000ff">Blue</option></select></div>
+    <form action="/LoginServlet" onsubmit="return empty_form()" method="POST">
+        <div align="center">Добро пожаловать в чат</div>
+        <div align="center">Представьтесь, пожалуйста: <input type="text" id="username" name="username"/></div>
 
-        <div><input type="submit" value="Sign in"></div>
+         <div align="center">Выберите цвет сообщений:  <select name="color">
+                <option value="#000000" style="color: black">Черный</option>
+                <option value="#ff0000" style="color: red">Красный</option>
+                <option value="#00ff00" style="color: green">Зеленый</option>
+                <option value="#0000ff" style="color: blue">Синий</option></select>
+         </div>
+
+        <div align="center"><input type="submit" value="Войти"></div>
     </form>
-
 
 </body>
 </html>

@@ -6,6 +6,9 @@ import org.json.JSONObject;
 import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 /**
  * Created by shi on 12.11.16.
@@ -25,12 +28,17 @@ public class ChatWebSocket {
     }
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config){
+    public void onOpen(Session session, EndpointConfig config) throws JSONException {
         this.httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
         chatService.add(this, httpSession);
         this.session = session;
         this.userProfile = (UserProfile) httpSession.getAttribute("userprofile");
-        chatService.sendMessage("System: Welcome user " + userProfile.getUserName());
+        JSONObject js = new JSONObject();
+        js.put("username", "System");
+        js.put("message", "Welcome user " + userProfile.getUserName());
+        js.put("color", "#BDBDBD");
+        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+        chatService.sendMessage(js.toString());
     }
 
     @OnMessage
@@ -38,16 +46,22 @@ public class ChatWebSocket {
         String name = userProfile.getUserName();
         String color = userProfile.getColor();
         JSONObject js = new JSONObject();
-        js.put("type", "user");
         js.put("username", name);
         js.put("message", data);
-        js.put("textcolor", color);
-        chatService.sendMessage(data);
+        js.put("color", color);
+        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+        System.out.println(js.toString());
+        chatService.sendMessage(js.toString());
     }
 
     @OnClose
-    public void onClose(Session session) {
-        chatService.sendMessage("System: Bye user " + userProfile.getUserName());
+    public void onClose(Session session) throws JSONException {
+        JSONObject js = new JSONObject();
+        js.put("username", "System");
+        js.put("message", "User " + userProfile.getUserName() +" leave chat");
+        js.put("color", "#BDBDBD");
+        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+        chatService.sendMessage(js.toString());
         chatService.remove(this, httpSession);
     }
 

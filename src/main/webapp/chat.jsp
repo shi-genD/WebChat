@@ -26,8 +26,9 @@
     </style>
     </head>
 
-    <title>WebSocket Chat</title>
+    <title>Web Chat</title>
     <body>
+    <%@ page contentType="text/html;charset=utf-8" %>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     <script language="javascript" type="text/javascript">
         $(document).ready(function(){
@@ -37,12 +38,13 @@
             };
             ws.onmessage = function (event) {
                 var msg = JSON.parse(event.data);
-                var type = msg.type;
-                var username = msg.username;
-                var message = msg.message;
-                var color = msg.color;
+                var uname = msg.username;
+                var umsg = msg.message;
+                var ucolor = msg.color;
+                var utime = msg.mtime;
 
-                $('#message_box').append("<div><span style=\"color:"+color+"\">"+username+" : "+message+"</span></div>");
+                $('#message_box').append("<div><span style=\"color:"+ucolor+"\">"+utime+" "+uname+": "+umsg+"</span></div>");
+
             };
             ws.onclose = function (event) {
             };
@@ -60,13 +62,22 @@
 
         });
     </script>
-
-
+    <%
+        String userName = null;
+        Cookie[] cookies = request.getCookies();
+        if(cookies !=null){
+            for(Cookie cookie : cookies){
+                if(cookie.getName().equals("user")) userName = cookie.getValue();
+            }
+        }
+    %>
+    <div align="center">Welcome to chat, <%=userName%></div>
     <div class="chat_wrapper">
         <div class="message_box" id="message_box"></div>
         <div class="panel">
-                <input type="text" name="message" id="message" placeholder="Message" maxlength="80" style="width:80%" />
-                <button id="send-btn">Send</button>
+            Write:
+            <input type="text" name="message" id="message" maxlength="80" style="width:80%" />
+            <button id="send-btn">Send</button>
         </div>
         <form action="/LogoutServlet" method="GET">
             <button id="logout">Exit</button>
