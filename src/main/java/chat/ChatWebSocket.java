@@ -33,7 +33,8 @@ public class ChatWebSocket {
         chatService.add(this, httpSession);
         this.session = session;
         this.userProfile = (UserProfile) httpSession.getAttribute("userprofile");
-        chatService.sendMessage(systemJsonMessage("enters the chat"));
+        String action = "присоединяется к чату";
+        chatService.sendMessage(systemJsonMessage(action));
     }
 
     @OnMessage
@@ -52,7 +53,8 @@ public class ChatWebSocket {
     @OnClose
     public void onClose(Session session) throws JSONException {
         chatService.remove(this, httpSession);
-        chatService.sendMessage(systemJsonMessage("leaves the chat"));
+        String action = "покидает чат";
+        chatService.sendMessage(systemJsonMessage(action));
     }
 
     public void sendString(String data) {

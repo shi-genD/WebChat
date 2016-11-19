@@ -24,13 +24,13 @@
             background: #FFFFFF;
             height: 300px;
             overflow: auto;
-            float: left;
+            float: right;
             padding: 10px;
             border: 1px solid #999999;
         }
         .message_box .online_box {
-            padding: 7px; /* Поля вокруг текста */
-            margin-bottom: 1em; /* Отступ снизу */
+            padding: 7px;
+            margin-bottom: 1em;
         }
         .chat_wrapper .panel input{
             padding: 2px 2px 2px 5px;
@@ -66,7 +66,6 @@
                     for (var i = 0; i<onlineList.length; i++) {
                         $('#online_box').append("<div><span style=\"color:"+onlineList[i].color+"\">"+onlineList[i].username+"</span></div>")
                     }
-
                 }
             };
             ws.onclose = function (event) {
@@ -95,18 +94,17 @@
         }
     %>
 
-
-        <form action="LogoutServlet" method="GET">
-            <div align="center">Welcome to chat, <%=userName%><button id="logout">Exit</button></div>
-        </form>
-
     <div class="chat_wrapper">
+        <form action="LogoutServlet" method="GET">
+            <div >Добро пожаловать, <%=userName%></div>
+            <div><button id="logout">Выйти</button></div>
+        </form>
         <div class="message_box" id="message_box" style="width:70%"></div>
         <div class="online_box" id="online_box" style="width:20%"></div>
         <div class="panel">
-            Write:
-            <input type="text" name="message" id="message" maxlength="80" style="width:80%" />
-            <button id="send-btn">Send</button>
+            Написать:
+            <input type="text" name="message" id="message" maxlength="80" style="width:85%" />
+            <button id="send-btn">Отправить</button>
         </div>
 
     </div>

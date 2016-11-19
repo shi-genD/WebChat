@@ -7,7 +7,6 @@
 <body>
 <%@ page contentType="text/html;charset=utf-8" %>
 <%
-    //allow access only if session exists
     String userName = null;
     Cookie[] cookies = request.getCookies();
     if(cookies !=null){
@@ -16,6 +15,6 @@
         }
     }
 %>
-<h3><%=userName %>, this Session is already used.</h3>
+<h3><%=userName %>, эта сессия уже используется.</h3>
 </body>
 </html>
