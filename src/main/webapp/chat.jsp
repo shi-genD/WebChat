@@ -49,6 +49,7 @@
             ws = new WebSocket("ws://localhost:8080/chat");
             ws.onopen = function (event) {
             };
+
             ws.onmessage = function (event) {
                 var msg = JSON.parse(event.data);
                 var type = msg.type;
@@ -58,9 +59,9 @@
                 var utime = msg.mtime;
                 var onlineList = msg.onlinelist;
 
-
                 $('#message_box').append("<div><span style=\"color:"+ucolor+"\">"+utime+" "+uname+": "+umsg+"</span></div>");
-
+                var div = $('#message_box');
+                div.scrollTop(div.prop('scrollHeight'));
                 if (type=="System") {
                     $('#online_box').html("<div>Сейчас онлайн:</div>");
                     for (var i = 0; i<onlineList.length; i++) {
@@ -68,22 +69,25 @@
                     }
                 }
             };
+
             ws.onclose = function (event) {
             };
 
             $('#send-btn').click(function() {
                 var messageField = document.getElementById("message");
                 var message = messageField.value;
-                if(message == ""){ //emtpy message?
+                if(message == ""){
                     alert("Enter Some message Please!");
                     return;
                 }
                 ws.send(message);
                 messageField.value = '';
+                messageField.focus();
             });
-
         });
+
     </script>
+
     <%
         String userName = null;
         Cookie[] cookies = request.getCookies();
@@ -103,7 +107,7 @@
         <div class="online_box" id="online_box" style="width:20%"></div>
         <div class="panel">
             Написать:
-            <input type="text" name="message" id="message" maxlength="80" style="width:85%" />
+            <input type="text" name="message" id="message" maxlength="80" style="width:85%" autofocus/>
             <button id="send-btn">Отправить</button>
         </div>
 
