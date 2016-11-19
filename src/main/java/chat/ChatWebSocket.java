@@ -33,12 +33,7 @@ public class ChatWebSocket {
         chatService.add(this, httpSession);
         this.session = session;
         this.userProfile = (UserProfile) httpSession.getAttribute("userprofile");
-        JSONObject js = new JSONObject();
-        js.put("username", "System");
-        js.put("message", "Welcome user " + userProfile.getUserName());
-        js.put("color", "#BDBDBD");
-        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
-        chatService.sendMessage(js.toString());
+        chatService.sendMessage(systemJsonMessage("enters the chat"));
     }
 
     @OnMessage
@@ -46,23 +41,18 @@ public class ChatWebSocket {
         String name = userProfile.getUserName();
         String color = userProfile.getColor();
         JSONObject js = new JSONObject();
+        js.put("type", "User");
         js.put("username", name);
         js.put("message", data);
         js.put("color", color);
         js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
-        System.out.println(js.toString());
         chatService.sendMessage(js.toString());
     }
 
     @OnClose
     public void onClose(Session session) throws JSONException {
-        JSONObject js = new JSONObject();
-        js.put("username", "System");
-        js.put("message", "User " + userProfile.getUserName() +" leave chat");
-        js.put("color", "#BDBDBD");
-        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
-        chatService.sendMessage(js.toString());
         chatService.remove(this, httpSession);
+        chatService.sendMessage(systemJsonMessage("leaves the chat"));
     }
 
     public void sendString(String data) {
@@ -71,6 +61,17 @@ public class ChatWebSocket {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public String systemJsonMessage(String action) throws JSONException {
+        JSONObject js = new JSONObject();
+        js.put("type", "System");
+        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+        js.put("username", "System");
+        js.put("color", "#BDBDBD");
+        js.put("onlinelist", ChatService.getInstance().getOnlineList());
+        js.put("message", userProfile.getUserName() + " " + action);
+        return js.toString();
     }
 
     @Override
@@ -84,5 +85,9 @@ public class ChatWebSocket {
     @Override
     public int hashCode() {
         return httpSession.hashCode();
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
     }
 }

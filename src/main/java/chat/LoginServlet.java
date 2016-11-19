@@ -18,7 +18,7 @@ public class LoginServlet extends HttpServlet {
         String color = req.getParameter("color");
         HttpSession session = req.getSession();
 
-        session.setAttribute("userprofile", new UserProfile(username, color));
+        session.setAttribute("userprofile", new UserProfile(username, color, session));
         session.setMaxInactiveInterval(30*60);
 
         Cookie userName = new Cookie("user", username);

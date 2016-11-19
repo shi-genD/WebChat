@@ -1,6 +1,11 @@
 package chat;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,6 +53,17 @@ public class ChatService {
     public void remove(ChatWebSocket webSocket, HttpSession httpSession) {
         webSockets.remove(webSocket);
         httpSessions.remove(httpSession);
+    }
+
+    public JSONArray getOnlineList () throws JSONException {
+        JSONArray onlineList = new JSONArray();
+        for (ChatWebSocket ws : webSockets) {
+            JSONObject jo = new JSONObject();
+            jo.put("username", ws.getUserProfile().getUserName());
+            jo.put("color", ws.getUserProfile().getColor());
+            onlineList.put(jo);
+        }
+        return onlineList;
     }
 
 }
