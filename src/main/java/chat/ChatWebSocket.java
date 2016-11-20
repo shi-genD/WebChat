@@ -28,34 +28,42 @@ public class ChatWebSocket {
     }
 
     @OnOpen
-    public void onOpen(Session session, EndpointConfig config) throws JSONException {
+    public void onOpen(Session session, EndpointConfig config) {
         this.httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
-        chatService.add(this, httpSession);
         this.session = session;
         this.userProfile = (UserProfile) httpSession.getAttribute("userprofile");
-        String action = "присоединяется к чату";
-        chatService.sendMessage(systemJsonMessage(action));
+        chatService.add(this, httpSession);
+        try {
+            final String action = "присоединяется к чату";
+            final String jsonMessage = systemJsonMessage(action);
+            chatService.sendMessage(jsonMessage);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnMessage
-    public void onMessage(String data, Session session) throws JSONException {
-        String name = userProfile.getUserName();
-        String color = userProfile.getColor();
-        JSONObject js = new JSONObject();
-        js.put("type", "User");
-        js.put("username", name);
-        js.put("message", data);
-        js.put("color", color);
-        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
-        chatService.sendMessage(js.toString());
+    public void onMessage(String data, Session session) {
+        try {
+            final String jsonMessage = userJsonMessage(data);
+            chatService.sendMessage(jsonMessage);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnClose
-    public void onClose(Session session) throws JSONException {
+    public void onClose(Session session) {
         chatService.remove(this, httpSession);
-        String action = "покидает чат";
-        chatService.sendMessage(systemJsonMessage(action));
+        try {
+            final String action = "покидает чат";
+            final String jsonMessage = systemJsonMessage(action);
+            chatService.sendMessage(jsonMessage);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
 
     public void sendString(String data) {
         try {
@@ -65,7 +73,7 @@ public class ChatWebSocket {
         }
     }
 
-    public String systemJsonMessage(String action) throws JSONException {
+    private String systemJsonMessage(String action) throws JSONException {
         JSONObject js = new JSONObject();
         js.put("type", "System");
         js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
@@ -73,6 +81,18 @@ public class ChatWebSocket {
         js.put("color", "#BDBDBD");
         js.put("onlinelist", ChatService.getInstance().getOnlineList());
         js.put("message", userProfile.getUserName() + " " + action);
+        return js.toString();
+    }
+
+    private String userJsonMessage(String data) throws JSONException {
+        String name = userProfile.getUserName();
+        String color = userProfile.getColor();
+        JSONObject js = new JSONObject();
+        js.put("type", "User");
+        js.put("username", name);
+        js.put("message", data);
+        js.put("color", color);
+        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
         return js.toString();
     }
 

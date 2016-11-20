@@ -40,7 +40,7 @@ public class ChatService {
         }
     }
 
-    public void add(ChatWebSocket webSocket, HttpSession httpSession) {
+    public synchronized void add(ChatWebSocket webSocket, HttpSession httpSession) {
         webSockets.add(webSocket);
         httpSessions.add(httpSession);
     }
@@ -49,7 +49,7 @@ public class ChatService {
         return httpSessions.contains(httpSession);
     }
 
-    public void remove(ChatWebSocket webSocket, HttpSession httpSession) {
+    public synchronized void remove(ChatWebSocket webSocket, HttpSession httpSession) {
         webSockets.remove(webSocket);
         httpSessions.remove(httpSession);
     }
