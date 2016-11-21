@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -32,14 +33,13 @@ public class ChatWebSocket {
         this.httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
         this.session = session;
         this.userProfile = (UserProfile) httpSession.getAttribute("userprofile");
-        chatService.add(this, httpSession);
+        chatService.add(this);
         try {
             final String action = "присоединяется к чату";
             final String jsonMessage = systemJsonMessage(action);
             chatService.sendMessage(jsonMessage);
         } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            System.out.println(e.getMessage());        }
     }
 
     @OnMessage
@@ -48,40 +48,35 @@ public class ChatWebSocket {
             final String jsonMessage = userJsonMessage(data);
             chatService.sendMessage(jsonMessage);
         } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            System.out.println(e.getMessage());        }
     }
 
     @OnClose
     public void onClose(Session session) {
-        chatService.remove(this, httpSession);
+        chatService.remove(this);
         try {
             final String action = "покидает чат";
             final String jsonMessage = systemJsonMessage(action);
             chatService.sendMessage(jsonMessage);
         } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            System.out.println(e.getMessage());        }
     }
 
 
     public void sendString(String data) {
         try {
             session.getBasicRemote().sendText(data);
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private String systemJsonMessage(String action) throws JSONException {
-        JSONObject js = new JSONObject();
-        js.put("type", "System");
-        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
-        js.put("username", "System");
-        js.put("color", "#BDBDBD");
-        js.put("onlinelist", ChatService.getInstance().getOnlineList());
-        js.put("message", userProfile.getUserName() + " " + action);
-        return js.toString();
+    public HttpSession getHttpSession() {
+        return httpSession;
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
     }
 
     private String userJsonMessage(String data) throws JSONException {
@@ -96,6 +91,17 @@ public class ChatWebSocket {
         return js.toString();
     }
 
+    private String systemJsonMessage(String action) throws JSONException {
+        JSONObject js = new JSONObject();
+        js.put("type", "System");
+        js.put("mtime", LocalTime.now().format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)));
+        js.put("username", "System");
+        js.put("color", "#BDBDBD");
+        js.put("onlinelist", ChatService.getInstance().getOnlineList());
+        js.put("message", userProfile.getUserName() + " " + action);
+        return js.toString();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -107,9 +113,5 @@ public class ChatWebSocket {
     @Override
     public int hashCode() {
         return httpSession.hashCode();
-    }
-
-    public UserProfile getUserProfile() {
-        return userProfile;
     }
 }

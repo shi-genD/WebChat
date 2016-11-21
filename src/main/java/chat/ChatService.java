@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpSession;
-import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -15,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatService {
     private Set<ChatWebSocket> webSockets;
-    private Set<HttpSession> httpSessions;
     private static ChatService instance;
 
     public static synchronized ChatService getInstance() {
@@ -26,8 +24,7 @@ public class ChatService {
     }
 
     private ChatService() {
-        this.webSockets = Collections.newSetFromMap(new ConcurrentHashMap<>());
-        this.httpSessions = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        this.webSockets = ConcurrentHashMap.newKeySet();
     }
 
     public void sendMessage(String data) {
@@ -40,18 +37,21 @@ public class ChatService {
         }
     }
 
-    public synchronized void add(ChatWebSocket webSocket, HttpSession httpSession) {
+    public void add(ChatWebSocket webSocket) {
         webSockets.add(webSocket);
-        httpSessions.add(httpSession);
     }
 
     public boolean containsSession(HttpSession httpSession) {
-        return httpSessions.contains(httpSession);
+        for (ChatWebSocket webSocket : webSockets) {
+            if (webSocket.getHttpSession().equals(httpSession)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public synchronized void remove(ChatWebSocket webSocket, HttpSession httpSession) {
+    public void remove(ChatWebSocket webSocket) {
         webSockets.remove(webSocket);
-        httpSessions.remove(httpSession);
     }
 
     public JSONArray getOnlineList () throws JSONException {

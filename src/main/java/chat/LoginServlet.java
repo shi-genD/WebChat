@@ -1,6 +1,5 @@
 package chat;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
@@ -12,7 +11,7 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String username = req.getParameter("username");
         String color = req.getParameter("color");
@@ -25,7 +24,6 @@ public class LoginServlet extends HttpServlet {
         userName.setMaxAge(30*60);
         req.setCharacterEncoding("UTF-8");
         resp.addCookie(userName);
-        System.out.println(username);
         resp.sendRedirect("chat.jsp");
     }
 }
